@@ -34,15 +34,7 @@ class Customer
      */
     private $email;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Invoice::class, mappedBy="relation")
-     */
-    private $invoices;
 
-    public function __construct()
-    {
-        $this->invoices = new ArrayCollection();
-    }
 
     public function getId(): ?int
     {
@@ -85,34 +77,4 @@ class Customer
         return $this;
     }
 
-    /**
-     * @return Collection|Invoice[]
-     */
-    public function getInvoices(): Collection
-    {
-        return $this->invoices;
-    }
-
-    public function addInvoice(Invoice $invoice): self
-    {
-        if (!$this->invoices->contains($invoice)) {
-            $this->invoices[] = $invoice;
-            $invoice->setRelation($this);
-        }
-
-        return $this;
-    }
-
-    public function removeInvoice(Invoice $invoice): self
-    {
-        if ($this->invoices->contains($invoice)) {
-            $this->invoices->removeElement($invoice);
-            // set the owning side to null (unless already changed)
-            if ($invoice->getRelation() === $this) {
-                $invoice->setRelation(null);
-            }
-        }
-
-        return $this;
-    }
 }

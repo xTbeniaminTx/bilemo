@@ -39,6 +39,11 @@ class AccessProvider
      */
     private $customers;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="accessProviders")
+     */
+    private $user;
+
     public function __construct()
     {
         $this->customers = new ArrayCollection();
@@ -112,6 +117,18 @@ class AccessProvider
                 $customer->setAccessProvider(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }

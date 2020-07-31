@@ -34,6 +34,16 @@ class Customer
      */
     private $email;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $password;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=AccessProvider::class, inversedBy="customers")
+     */
+    private $accessProvider;
+
 
 
     public function getId(): ?int
@@ -73,6 +83,30 @@ class Customer
     public function setEmail(string $email): self
     {
         $this->email = $email;
+
+        return $this;
+    }
+
+    public function getPassword(): ?string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): self
+    {
+        $this->password = $password;
+
+        return $this;
+    }
+
+    public function getAccessProvider(): ?AccessProvider
+    {
+        return $this->accessProvider;
+    }
+
+    public function setAccessProvider(?AccessProvider $accessProvider): self
+    {
+        $this->accessProvider = $accessProvider;
 
         return $this;
     }

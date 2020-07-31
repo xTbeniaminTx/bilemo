@@ -32,6 +32,16 @@ class Product
      */
     private $releaseAt;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $color;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $description;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -69,6 +79,30 @@ class Product
     public function setReleaseAt(\DateTimeInterface $releaseAt): self
     {
         $this->releaseAt = $releaseAt;
+
+        return $this;
+    }
+
+    public function getColor(): ?string
+    {
+        return $this->color;
+    }
+
+    public function setColor(string $color): self
+    {
+        $this->color = $color;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): self
+    {
+        $this->description = $description;
 
         return $this;
     }

@@ -2,9 +2,8 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\AccessProvider;
+
 use App\Entity\Customer;
-use App\Entity\Product;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
@@ -12,7 +11,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Faker\Factory;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-class AppFixtures extends Fixture implements DependentFixtureInterface
+class UserCustomerFixtures extends Fixture implements DependentFixtureInterface
 {
     /**
      * @var UserPasswordEncoderInterface
@@ -46,7 +45,6 @@ class AppFixtures extends Fixture implements DependentFixtureInterface
                     ->setEmail($faker->email)
                     ->setPassword($faker->password)
                     ->setUser($user);
-                $this->addReference('Customer-' . $c, $customer);
                 $manager->persist($customer);
             }
 

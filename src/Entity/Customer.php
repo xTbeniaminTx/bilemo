@@ -40,10 +40,10 @@ class Customer
     private $password;
 
     /**
-     * @ORM\ManyToOne(targetEntity=AccessProvider::class, inversedBy="customers")
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="customers")
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $accessProvider;
-
+    private $user;
 
 
     public function getId(): ?int
@@ -99,14 +99,14 @@ class Customer
         return $this;
     }
 
-    public function getAccessProvider(): ?AccessProvider
+    public function getUser(): ?User
     {
-        return $this->accessProvider;
+        return $this->user;
     }
 
-    public function setAccessProvider(?AccessProvider $accessProvider): self
+    public function setUser(?User $user): self
     {
-        $this->accessProvider = $accessProvider;
+        $this->user = $user;
 
         return $this;
     }

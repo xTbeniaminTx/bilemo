@@ -39,7 +39,7 @@ class CustomerController extends AbstractController
     {
         $customer = $serializer->deserialize($request->getContent(), Customer::class, 'json');
 
-        $user = $userRepository->find(27);
+        $user = $userRepository->find(26);
 
         $customer->setUser($user);
 
@@ -63,7 +63,7 @@ class CustomerController extends AbstractController
      */
     public function show(Customer $customer, CustomerRepository $customerRepository,UserRepository $userRepository,SerializerInterface $serializer)
     {
-        $user = $userRepository->find(27);
+        $user = $userRepository->find(26);
 
         $customerToFind = $customerRepository->findOneByUser($user, $customer->getId());
         if (!$customerToFind) {
@@ -89,12 +89,13 @@ class CustomerController extends AbstractController
      */
     public function index(Request $request, CustomerRepository $customerRepository, UserRepository $userRepository, SerializerInterface $serializer)
     {
+        dd($this->getUser());
         $page = $request->query->get('page');
         if (is_null($page) || $page < 1) {
             $page = 1;
         }
 
-        $user = $userRepository->find(27);
+        $user = $userRepository->find(26);
 
         $phones = $customerRepository->findAllCustomersByUser($user->getId(), $page, 10);
         $data = $serializer->serialize($phones, 'json', [

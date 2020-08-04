@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Customer;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -17,6 +18,17 @@ class CustomerRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Customer::class);
+    }
+
+    public function findAllCustomersByUser($userId ,$page, $limit)
+    {
+        $query = $this->createQueryBuilder('c')
+            ->andWhere('c.user = :val')
+            ->setParameter('val', $userId)
+            ->getQuery()
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit);
+        return new Paginator($query);
     }
 
     // /**
@@ -36,15 +48,16 @@ class CustomerRepository extends ServiceEntityRepository
     }
     */
 
-    /*
-    public function findOneBySomeField($value): ?Customer
+    public function findOneByUser($userId, $customerId): ?Customer
     {
         return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
+            ->andWhere('c.user = :userId')
+            ->andWhere('c.id = :customerId')
+            ->setParameter('userId', $userId)
+            ->setParameter('customerId', $customerId)
             ->getQuery()
             ->getOneOrNullResult()
         ;
     }
-    */
+
 }

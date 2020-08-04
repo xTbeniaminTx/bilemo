@@ -26,7 +26,9 @@ class ProductController extends AbstractController
     public function show(Product $phone, ProductRepository $phoneRepository, SerializerInterface $serializer)
     {
         $phone = $phoneRepository->find($phone->getId());
-        $data = $serializer->serialize($phone, 'json');
+        $data = $serializer->serialize($phone, 'json', [
+            'groups' => ['show']
+        ]);
         return new Response($data, 200, [
             'Content-Type' => 'application/json'
         ]);
@@ -46,7 +48,9 @@ class ProductController extends AbstractController
             $page = 1;
         }
         $phones = $productRepository->findAllPhones($page, 10);
-        $data = $serializer->serialize($phones, 'json');
+        $data = $serializer->serialize($phones, 'json', [
+            'groups' => ['list']
+        ]);
         return new Response($data, 200, [
             'Content-Type' => 'application/json'
         ]);

@@ -32,7 +32,8 @@ class UserCustomerFixtures extends Fixture implements DependentFixtureInterface
 
             $hash = $this->encoder->encodePassword($user, "password");
 
-            $user->setUsername($faker->userName)
+            $user->setLogin($faker->userName)
+                ->setRoles($user->getRoles())
                 ->setPassword($hash);
 
             $manager->persist($user);

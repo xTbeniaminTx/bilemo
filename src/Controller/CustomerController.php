@@ -30,16 +30,17 @@ class CustomerController extends AbstractController
     /**
      * @Route("/", name="add_customer", methods={"POST"})
      * @param Request $request
-     * @param UserRepository $userRepository
      * @param SerializerInterface $serializer
      * @param EntityManagerInterface $entityManager
      * @return JsonResponse
      */
-    public function new(Request $request,UserRepository $userRepository,SerializerInterface $serializer, EntityManagerInterface $entityManager)
+    public function new(Request $request,SerializerInterface $serializer, EntityManagerInterface $entityManager)
     {
+
+
         $customer = $serializer->deserialize($request->getContent(), Customer::class, 'json');
 
-        $user = $userRepository->find(26);
+        $user = $this->getUser();
 
         $customer->setUser($user);
 

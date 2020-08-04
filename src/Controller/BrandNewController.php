@@ -13,8 +13,8 @@ class BrandNewController extends AbstractController
     public function index()
     {
         return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/BrandNewController.php',
+            'name' => 'iPhone X',
+            'price' => 1000
         ]);
     }
 }

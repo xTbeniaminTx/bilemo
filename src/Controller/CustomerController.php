@@ -40,7 +40,7 @@ class CustomerController extends AbstractController
         $customer->setUser($user);
 
         $errors = $validator->validate($customer);
-        if(count($errors)) {
+        if (count($errors)) {
             $errors = $serializer->serialize($errors, 'json');
             return new Response($errors, 500, [
                 'Content-Type' => 'application/json'
@@ -105,5 +105,45 @@ class CustomerController extends AbstractController
         return new Response($data, 200, [
             'Content-Type' => 'application/json'
         ]);
+    }
+
+    /**
+     * @Route("/{id}", name="update_customers", methods={"PATCH"})
+     * @param Request $request
+     * @param SerializerInterface $serializer
+     * @param Customer $customer
+     * @param ValidatorInterface $validator
+     * @param EntityManagerInterface $entityManager
+     * @return JsonResponse|Response
+     */
+    public function update(Request $request, SerializerInterface $serializer, Customer $customer, ValidatorInterface $validator, EntityManagerInterface $entityManager)
+    {
+        $user = $this->getUser();
+        $customerUpdate = $entityManager->getRepository(Customer::class)->findOneByUser($user, $customer->getId());
+        if (!$customerUpdate) {
+            throw new NotFoundHttpException("L utilisateur ne vous appartiene pas!");
+
+        }
+        $data = json_decode($request->getContent());
+        foreach ($data as $key => $value){
+            if($key && !empty($value)) {
+                $name = ucfirst($key);
+                $setter = 'set'.$name;
+                $customerUpdate->$setter($value);
+            }
+        }
+        $errors = $validator->validate($customerUpdate);
+        if (count($errors)) {
+            $errors = $serializer->serialize($errors, 'json');
+            return new Response($errors, 500, [
+                'Content-Type' => 'application/json'
+            ]);
+        }
+        $entityManager->flush();
+        $data = [
+            'status' => 200,
+            'message' => 'Le client a bien été mis à jour!'
+        ];
+        return new JsonResponse($data);
     }
 }

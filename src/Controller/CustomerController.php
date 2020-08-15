@@ -3,14 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Customer;
-use App\Entity\Product;
-use App\Entity\User;
 use App\Repository\CustomerRepository;
-use App\Repository\ProductRepository;
-use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,7 +20,6 @@ use Symfony\Component\Serializer\SerializerInterface;
  */
 class CustomerController extends AbstractController
 {
-
 
     /**
      * @Route("/", name="add_customer", methods={"POST"})
@@ -57,17 +51,16 @@ class CustomerController extends AbstractController
      * @Route("/{id}", name="show_customer", methods={"GET"})
      * @param Customer $customer
      * @param CustomerRepository $customerRepository
-     * @param UserRepository $userRepository
      * @param SerializerInterface $serializer
      * @return Response
      */
-    public function show(Customer $customer, CustomerRepository $customerRepository, UserRepository $userRepository, SerializerInterface $serializer)
+    public function show(Customer $customer, CustomerRepository $customerRepository, SerializerInterface $serializer)
     {
-        $user = $userRepository->find(26);
+        $user = $this->getUser();
 
         $customerToFind = $customerRepository->findOneByUser($user, $customer->getId());
         if (!$customerToFind) {
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException("L utilisateur ne vous appartien pas!");
         }
         $data = $serializer->serialize($customerToFind, 'json', [
             'groups' => ['show']
@@ -82,21 +75,19 @@ class CustomerController extends AbstractController
      * @Route("/{page<\d+>?1}", name="list_customers", methods={"GET"})
      * @param Request $request
      * @param CustomerRepository $customerRepository
-     * @param UserRepository $userRepository
      * @param SerializerInterface $serializer
      * @return Response
      */
-    public function index(Request $request, CustomerRepository $customerRepository, UserRepository $userRepository, SerializerInterface $serializer)
+    public function index(Request $request, CustomerRepository $customerRepository, SerializerInterface $serializer)
     {
-        dd($this->getUser());
         $page = $request->query->get('page');
         if (is_null($page) || $page < 1) {
             $page = 1;
         }
 
-        $user = $userRepository->find(26);
+        $user = $this->getUser();
 
-        $phones = $customerRepository->findAllCustomersByUser($user->getId(), $page, 10);
+        $phones = $customerRepository->findAllCustomersByUser($user, $page, 10);
         $data = $serializer->serialize($phones, 'json', [
             'groups' => ['list']
         ]);

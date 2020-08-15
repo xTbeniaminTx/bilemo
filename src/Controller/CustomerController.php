@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * Class CustomerController
@@ -26,9 +27,10 @@ class CustomerController extends AbstractController
      * @param Request $request
      * @param SerializerInterface $serializer
      * @param EntityManagerInterface $entityManager
-     * @return JsonResponse
+     * @param ValidatorInterface $validator
+     * @return Response
      */
-    public function new(Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager)
+    public function new(Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager, ValidatorInterface $validator)
     {
 
         $customer = $serializer->deserialize($request->getContent(), Customer::class, 'json');
@@ -36,6 +38,14 @@ class CustomerController extends AbstractController
         $user = $this->getUser();
 
         $customer->setUser($user);
+
+        $errors = $validator->validate($customer);
+        if(count($errors)) {
+            $errors = $serializer->serialize($errors, 'json');
+            return new Response($errors, 500, [
+                'Content-Type' => 'application/json'
+            ]);
+        }
 
         $entityManager->persist($customer);
 
@@ -60,7 +70,8 @@ class CustomerController extends AbstractController
 
         $customerToFind = $customerRepository->findOneByUser($user, $customer->getId());
         if (!$customerToFind) {
-            throw new NotFoundHttpException("L utilisateur ne vous appartien pas!");
+            throw new NotFoundHttpException("L utilisateur ne vous appartiene pas!");
+
         }
         $data = $serializer->serialize($customerToFind, 'json', [
             'groups' => ['show']

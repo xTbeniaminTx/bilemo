@@ -119,16 +119,16 @@ class CustomerController extends AbstractController
     public function update(Request $request, SerializerInterface $serializer, Customer $customer, ValidatorInterface $validator, EntityManagerInterface $entityManager)
     {
         $user = $this->getUser();
-        $customerUpdate = $entityManager->getRepository(Customer::class)->findOneByUser($user, $customer->getId());
+        $customerUpdate = $entityManager->getRepository(Customer::class)->findOneByUser($user, $customer);
         if (!$customerUpdate) {
             throw new NotFoundHttpException("L utilisateur ne vous appartiene pas!");
 
         }
         $data = json_decode($request->getContent());
-        foreach ($data as $key => $value){
-            if($key && !empty($value)) {
+        foreach ($data as $key => $value) {
+            if ($key && !empty($value)) {
                 $name = ucfirst($key);
-                $setter = 'set'.$name;
+                $setter = 'set' . $name;
                 $customerUpdate->$setter($value);
             }
         }
@@ -145,5 +145,23 @@ class CustomerController extends AbstractController
             'message' => 'Le client a bien été mis à jour!'
         ];
         return new JsonResponse($data);
+    }
+
+    /**
+     * @Route("/{id}", name="delete_customer", methods={"DELETE"})
+     * @param Customer $customer
+     * @param EntityManagerInterface $entityManager
+     * @return Response
+     */
+    public function delete(Customer $customer, EntityManagerInterface $entityManager)
+    {
+        $user = $this->getUser();
+        $customerToDelete = $entityManager->getRepository(Customer::class)->findOneByUser($user, $customer);
+        if (!$customerToDelete) {
+            throw new NotFoundHttpException("L'utilisateur ne vous appartiene pas!");
+        }
+        $entityManager->remove($customerToDelete);
+        $entityManager->flush();
+        return new Response(null, 204);
     }
 }

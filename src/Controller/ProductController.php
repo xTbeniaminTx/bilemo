@@ -41,10 +41,10 @@ class ProductController extends AbstractController
      * @param SerializerInterface $serializer
      * @return Response
      */
-    public function index(Request $request,ProductRepository $productRepository, SerializerInterface $serializer)
+    public function index(Request $request, ProductRepository $productRepository, SerializerInterface $serializer)
     {
         $page = $request->query->get('page');
-        if(is_null($page) || $page < 1) {
+        if (is_null($page) || $page < 1) {
             $page = 1;
         }
         $phones = $productRepository->findAllPhones($page, 10);

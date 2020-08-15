@@ -34,9 +34,8 @@ class CustomerController extends AbstractController
      * @param EntityManagerInterface $entityManager
      * @return JsonResponse
      */
-    public function new(Request $request,SerializerInterface $serializer, EntityManagerInterface $entityManager)
+    public function new(Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager)
     {
-
 
         $customer = $serializer->deserialize($request->getContent(), Customer::class, 'json');
 
@@ -62,7 +61,7 @@ class CustomerController extends AbstractController
      * @param SerializerInterface $serializer
      * @return Response
      */
-    public function show(Customer $customer, CustomerRepository $customerRepository,UserRepository $userRepository,SerializerInterface $serializer)
+    public function show(Customer $customer, CustomerRepository $customerRepository, UserRepository $userRepository, SerializerInterface $serializer)
     {
         $user = $userRepository->find(26);
 
@@ -77,7 +76,6 @@ class CustomerController extends AbstractController
             'Content-Type' => 'application/json'
         ]);
     }
-
 
 
     /**

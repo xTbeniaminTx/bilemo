@@ -70,8 +70,7 @@ class CustomerController extends AbstractController
 
         $customerToFind = $customerRepository->findOneByUser($user, $customer->getId());
         if (!$customerToFind) {
-            throw new NotFoundHttpException("L utilisateur ne vous appartiene pas!");
-
+            throw new NotFoundHttpException("Customer not found");
         }
         $data = $serializer->serialize($customerToFind, 'json', [
             'groups' => ['show']
@@ -121,7 +120,7 @@ class CustomerController extends AbstractController
         $user = $this->getUser();
         $customerUpdate = $entityManager->getRepository(Customer::class)->findOneByUser($user, $customer);
         if (!$customerUpdate) {
-            throw new NotFoundHttpException("L utilisateur ne vous appartiene pas!");
+            throw new NotFoundHttpException();
 
         }
         $data = json_decode($request->getContent());

@@ -52,7 +52,7 @@ class CustomerController extends AbstractController
         $entityManager->flush();
         $data = [
             'status' => 201,
-            'message' => 'Le client a bien été ajouté'
+            'message' => 'Customer added Successfully!'
         ];
         return new JsonResponse($data, 201);
     }
@@ -70,7 +70,7 @@ class CustomerController extends AbstractController
 
         $customerToFind = $customerRepository->findOneByUser($user, $customer->getId());
         if (!$customerToFind) {
-            throw new NotFoundHttpException("Customer not found");
+            throw new NotFoundHttpException();
         }
         $data = $serializer->serialize($customerToFind, 'json', [
             'groups' => ['show']
@@ -141,7 +141,7 @@ class CustomerController extends AbstractController
         $entityManager->flush();
         $data = [
             'status' => 200,
-            'message' => 'Le client a bien été mis à jour!'
+            'message' => 'Customer Update successfully!'
         ];
         return new JsonResponse($data);
     }
@@ -157,7 +157,7 @@ class CustomerController extends AbstractController
         $user = $this->getUser();
         $customerToDelete = $entityManager->getRepository(Customer::class)->findOneByUser($user, $customer);
         if (!$customerToDelete) {
-            throw new NotFoundHttpException("L'utilisateur ne vous appartiene pas!");
+            throw new NotFoundHttpException();
         }
         $entityManager->remove($customerToDelete);
         $entityManager->flush();
